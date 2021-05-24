@@ -1,0 +1,243 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "EDMS-API",
+        "version": "1.0.0",
+        "description": "An Employee-Department Management API"
+    },
+    "host": "localhost:3000",
+    "basePath": "",
+    "consumes": "application/json",
+    "produces": "application/json",
+    "paths": {
+        "/emp": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    { 
+                        "in": "body",
+                        "name": "data",
+                        "required": true
+                    }
+                ],
+                "summary": "Creates an Employee",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/employee"
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    { 
+                        "in": "query",
+                        "name": "searchBy",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "summary": "Get Employee based on searching",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/employee"
+                        },
+                        "400": {
+                            "description": "BAD REQUEST"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    { 
+                        "in": "body",
+                        "name": "data",
+                        "required": true
+                    }
+                ],
+                "summary": "Update an Employee",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "BAD REQUEST"
+                    }
+                }
+            }
+        },
+        "/emp/{id}": {
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    { 
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "summary": "Deletes an Employee with given emp_id",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "BAD REQUEST"
+                    }
+                }
+            }
+        },
+        "/dept": {
+            "post": {
+                "tags": [
+                    "Department"
+                ],
+                "parameters": [
+                    { 
+                        "in": "body",
+                        "name": "data",
+                        "required": true
+                    }
+                ],
+                "summary": "Creates a Department",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/department-create"
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Department"
+                ],
+                "parameters": [
+                    { 
+                        "in": "query",
+                        "name": "searchBy",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "summary": "Get Department based on searching",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/department"
+                        },
+                        "400": {
+                            "description": "BAD REQUEST"
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/{id}": {
+            "delete": {
+                "tags": [
+                    "Department"
+                ],
+                "parameters": [
+                    { 
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "summary": "Deletes a department with given dept_id",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "BAD REQUEST"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "employee": {
+            "type": "object",
+            "properties": {
+                "emp_id": {
+                    "type": "BIGSERIAL"
+                },
+                "emp_name": {
+                    "type": "VARCHAR(22)"
+                },
+                "emp_salary": {
+                    "type": "NUMERIC"
+                },
+                "dept_id": {
+                    "type": "BIGINT REFERENCES dept(dept_id)"
+                }
+            }
+        },
+        "employee-create": {
+            "type": "object",
+            "properties": {
+                "emp_name": {
+                    "type": "VARCHAR(22)"
+                },
+                "emp_salary": {
+                    "type": "NUMERIC"
+                },
+                "dept_id": {
+                    "type": "BIGINT REFERENCES dept(dept_id)"
+                }
+            }
+        },
+        "department": {
+            "type": "object",
+            "properties": {
+                "dept_id": {
+                    "type": "BIGSERIAL"
+                },
+                "dept_name": {
+                    "type": "VARCHAR(22)"
+                }
+            }
+        },
+        "department-create": {
+            "type": "object",
+            "properties": {
+                "deptName": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
