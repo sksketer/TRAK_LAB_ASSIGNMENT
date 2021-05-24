@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import pool from '../db/db';
+import * as constants from '../utility/constants';
 
 // Class Based Controller
 class EmpController {
-    async createEmployee (req: Request, res: Response) {
+    async createNewEmployee (req: Request, res: Response) {
         try {
             const { name, salary, dept } = req.body;
-            const newEmployee = await pool.query('INSERT INTO employee (emp_name, emp_salary, dept_id) VALUES ($1, $2, $3) RETURNING *', [name, salary, dept]);
+            const newEmployee = await pool.query(constants.EMP_INSERT_QUERY, [name, salary, dept]);
     
             res.send(newEmployee.rows[0]);
         } catch (error) {
@@ -16,9 +17,8 @@ class EmpController {
 
     async searchEmployee (req: Request, res: Response) {
         try {
-            const query = 'SELECT * FROM employee';
+            const query = constants.EMP_SELECTION_QUERY;
             let searchQuery = '';
-            let sortQuery = '';
 
             if (req.query.searchBy) {
 
@@ -26,11 +26,7 @@ class EmpController {
                 searchQuery = ` WHERE ${searchFilter[0]} ${searchFilter[1]} ${searchFilter[2]}`;
             }
 
-            if (req.query.sortBy) {
-                sortQuery = ` ORDER BY ${req.query.sortBy}`;
-            }
-
-            const employees = await pool.query(query + searchQuery + sortQuery);
+            const employees = await pool.query(query + searchQuery + " ORDER BY emp_name");
     
             res.send(employees.rows);
         } catch (error) {
@@ -41,8 +37,13 @@ class EmpController {
     async updateEmployee (req: Request, res: Response) {
         try {
             const { changes, updateBy } = req.body;
-            const query = 'UPDATE employee SET';
+            const query = constants.EMP_UPDATION_QUERY;
             let changeQuery = '';
+
+            const emp = await pool.query(constants.EMP_SELECTION_QUERY + " WHERE emp_id = $1", [updateBy.emp_id]);
+            if (emp.rowCount == 0) {
+                return res.status(400).json({ msg: 'EMPLOYEE NOT FOUND' });
+            }
 
             for (let change in changes) {
                 changeQuery += ' ' + change + ' = ' + changes[change] + ',';
@@ -52,7 +53,7 @@ class EmpController {
 
             await pool.query(query + changeQuery + 'WHERE emp_id = $1', [updateBy.emp_id]);
     
-            res.send('Employee Updated');
+            res.json({ msg: 'EMPLOYEE UPDATED' });
         } catch (error) {
             res.status(400).json({ error });
         }
@@ -60,9 +61,14 @@ class EmpController {
 
     async deleteEmployee (req: Request, res: Response) {
         try {
-            await pool.query('DELETE FROM employee WHERE emp_id = $1', [req.params.id]);
+            const emp = await pool.query(constants.EMP_SELECTION_QUERY + " WHERE emp_id = $1", [req.params.id]);
+            if (emp.rowCount == 0) {
+                return res.status(400).json({ msg: 'EMPLOYEE NOT FOUND' });
+            }
+
+            await pool.query(constants.EMP_DELETION_QUERY, [req.params.id]);
     
-            res.send('Employee DELETED');
+            res.json({ msg: 'EMPLOYEE DELETED' });
         } catch (error) {
             res.status(400).json({ error });
         }
