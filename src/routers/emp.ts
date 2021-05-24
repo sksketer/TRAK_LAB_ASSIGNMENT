@@ -3,16 +3,16 @@ const empRouter = express.Router();
 import EmpController from '../controllers/emp';
 const empController = new EmpController();
 
-// create an employee
-empRouter.post('/', empController.createEmployee);
+// To create new Employee
+empRouter.post('/', empController.createNewEmployee);
 
-// Search employee BASED ON ANY FIELD AND ALSO SORT THEM ACCORDINGLY (according to user preference)
+// TO Search employee 
 empRouter.get('/', empController.searchEmployee);
 
-// update an employee
+// To update an employee
 empRouter.put('/', empController.updateEmployee);
 
-// delete an employee
+// TO delete an employee
 empRouter.delete('/:id', empController.deleteEmployee);
 
 export default empRouter;
