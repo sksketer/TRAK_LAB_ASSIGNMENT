@@ -3,7 +3,18 @@
 import express from "express";
 import deptRouter from "./routers/dept";
 import empRouter from './routers/emp';
+import  swaggerUI from 'swagger-ui-express';
+import * as swaggerDocument from './swagger.json';
 const app = express();
+import fs from 'fs';
+import morgan from 'morgan';
+import path from 'path';
+
+// create a write stream (in append mode)
+const accessLogStream = fs.createWriteStream(path.join(__dirname + '/logs/', 'access.log'), { flags: 'a' })
+
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }))
 
 app.use(express.json());
 
@@ -13,6 +24,9 @@ app.use('/emp', empRouter);
 // For all the routes starting with dept, we will use deptRouter
 app.use('/dept', deptRouter);
 
+// SWAGGER Documentation
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
 app.listen(3000, () => {
-    console.log('Running on port 3000');
+    console.log('Project Running: ');
 });
