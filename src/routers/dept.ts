@@ -3,20 +3,17 @@ import DeptController from '../controllers/dept';
 const deptRouter = express.Router();
 const deptController = new DeptController();
 
-// Creating a department
-deptRouter.post('/', deptController.createDept);
+// to create a new departmenr
+deptRouter.post('/', deptController.createDepartment);
 
-// Get all departments
-deptRouter.get('/', deptController.getAllDept);
+// TO search department
+deptRouter.get('/', deptController.searchDepartment);
 
-// get a department
-deptRouter.get('/:id', deptController.getDept);
-
-/* ******* update a department : If taking a real life scenerio, it's not possible to change the Department name, so this route is useless. 
+/* ******* To update department
 deptRouter.put('/:id', deptController.updateDepartment);
 ******** */
 
-// delete a department
-deptRouter.delete('/:id', deptController.deleteDept);
+// To delete a department
+deptRouter.delete('/:id', deptController.deleteDepartment);
 
 export default deptRouter;
